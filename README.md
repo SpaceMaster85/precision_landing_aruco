@@ -1,30 +1,24 @@
-# Precision Landing with ROS2, PX4, and ArUco Markers
+# Precision Landing with ROS2, PX4, and Pose Messages
 
-This project demonstrates the autonomous landing of a drone using ArUco markers, ROS2, and PX4. It features vision-based target detection, approach, and landing with configurable controllers, NED transformations, and spiral waypoint generation for robust target acquisition.
+This project demonstrates autonomous precision landing of a drone using Pose Messages, leveraging ROS2 and PX4. It provides vision-based target search, approach, and landing with configurable controllers, NED transformations, and spiral waypoint generation for robust target acquisition.
 
----
+## 🚀 Features
 
-## 📦 Features
+- **Vision-Based Target Detection:** Use of ArUco markers for precise landing target identification.
+- **Autonomous Landing:** Integration with ROS2 and PX4 for autonomous marker-based landing.
+- **Configurable Controllers:** Adjustable PID controllers for fine landing control.
+- **Spiral Waypoints:** Generates spiral waypoints for safe target approach.
+- **NED Transformations:** Converts between local and global coordinate systems for precise navigation.
 
-* **Vision-based Target Detection**: Utilizes ArUco markers for target identification.
-* **Spiral Waypoint Generation**: Creates a spiral flight path for target approach.
-* **NED Transformations**: Converts coordinates between different reference frames.
-* **Configurable Controllers**: Adjustable PID controllers for precise control.
-* **PX4 Integration**: Seamless communication with PX4 via ROS2.
+## 📦 Prerequisites
 
----
+- **PX4 Autopilot:** Installed and configured on the drone.
+- **ROS2 Foxy Fitzroy or later:** For communication and control.
+- **Git:** For cloning the repository and managing submodules.
 
-## 🛠 Installation
+## 🔧 Installation
 
-### 1. Prerequisites
-
-* Ubuntu 22.04
-* ROS2 Humble
-* PX4 Autopilot with an ArUco marker and downward-facing camera
-* Micro XRCE-DDS Agent
-* QGroundControl Daily Build
-* OpenCV 4.10.0
-* ROS_GZ bridge
+### 1. Setup Enviroment
 
 For detailed setup instructions, refer to the following resources:
 
@@ -35,22 +29,15 @@ For detailed setup instructions, refer to the following resources:
 ### 2. Clone the Repository
 
 ```bash
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
 git clone https://github.com/SpaceMaster85/precision_landing.git
 cd precision_landing
 ```
 
-### 3. Install Dependencies
+### 3. Build the Workspace
 
 ```bash
-pip install -r requirements.txt
-```
-
-### 4. Build the Workspace
-
-```bash
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
-ln -s ~/precision_landing .
 cd ~/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
@@ -62,8 +49,22 @@ source install/setup.bash
 
 ### 1. Launch PX4 Simulation
 
+
+Launch PX4 Simulation
 ```bash
-make px4_sitl_default gazebo
+make px4_sitl gz_x500_mono_cam_down_aruco
+
+Launch MicroXRCEAgent
+```bash
+micro-xrce-dds-agent udp4 -p 8888
+```
+Launch the ros_gz_bridge to bridge the camera image topic from Gazebo to ROS2
+```bash
+ros2 run ros_gz_bridge parameter_bridge /world/aruco/model/x500_mono_cam_down_0/link/camera_link/sensor/imager/image@sensor_msgs/msg/Image@gz.msgs.Image
+```
+Launch the ros_gz_bridge to bridge the camera info topic from Gazebo to ROS2 (this is how we get camera intrinsics)
+```bash
+ros2 run ros_gz_bridge parameter_bridge /world/aruco/model/x500_mono_cam_down_0/link/camera_link/sensor/imager/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo
 ```
 
 ### 2. Start ROS2 Node
@@ -72,9 +73,10 @@ make px4_sitl_default gazebo
 ros2 run precision_landing landing_node
 ```
 
-### 3. Provide ArUco Markers
+### 3. Provide Pose Messages
 
-Ensure that the ArUco markers are visible and detected by the camera.
+Ensure that the Pose Messages are provided to the ROS topic /target_pose
+I recommend to use ARUCO markers. See https://github.com/SpaceMaster85/aruco_id_checker and https://github.com/namo-robotics/aruco_markers
 
 ---
 
