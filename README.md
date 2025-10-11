@@ -53,8 +53,9 @@ source install/setup.bash
 Launch PX4 Simulation
 ```bash
 make px4_sitl gz_x500_mono_cam_down_aruco
-
+```
 Launch MicroXRCEAgent
+
 ```bash
 micro-xrce-dds-agent udp4 -p 8888
 ```
