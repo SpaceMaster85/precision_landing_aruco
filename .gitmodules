@@ -1,11 +1,8 @@
-[submodule "src/px4_msgs"]
-	path = src/px4_msgs
+[submodule "px4_msgs"]
+	path = px4_msgs
 	url = https://github.com/PX4/px4_msgs.git
 	branch = release/1.16
-[submodule "src/px4-ros2-interface-lib"]
-	path = src/px4-ros2-interface-lib
+[submodule "px4-ros2-interface-lib"]
+	path = px4-ros2-interface-lib
 	url = https://github.com/Auterion/px4-ros2-interface-lib.git
 	branch = release/1.16
-[submodule "src/aruco_markers_msgs"]
-	path = src/aruco_markers_msgs
-	url = https://github.com/SpaceMaster85/aruco_markers_msgs.git
